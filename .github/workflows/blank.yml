@@ -1,0 +1,33 @@
+name: Check CPU and Thread Info
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Basic CPU Info
+        run: |
+          echo "==== CPU INFO ===="
+          lscpu
+
+      - name: Print Logical CPU to Core Mapping
+        run: |
+          echo "==== Logical CPU to Core Mapping ===="
+          lscpu -e
+
+      - name: Print Total Threads
+        run: |
+          echo "==== Total Threads (Logical CPUs) ===="
+          nproc
+
+      - name: Print Physical Core Estimate
+        run: |
+          echo "==== Physical Core Estimate ===="
+          awk -F: '/^core id/ { cores[$2]++ } END { print "Estimated physical cores: " length(cores) }' <(lscpu -p=core)
+
+      - name: Print Thread per Core
+        run: |
+          echo "==== Thread(s) per Core ===="
+          lscpu | grep "Thread(s) per core"
